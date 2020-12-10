@@ -8,6 +8,7 @@ from django.db import models
 
 # Create your models here.
 from bs4 import BeautifulSoup
+from django.forms import model_to_dict
 from html import  HTML
 import json
 from review.models import Review
@@ -55,9 +56,21 @@ class ProductModel(models.Model):
             return {}
     @classmethod
     def get_all_product(cls):
-        products = ProductModel.objects.all()
-        products = serializers.serialize('json',products)
-        products = json.loads(products)
+        products = ProductModel.objects.raw("SELECT * FROM product_productmodel")
+        products = [model_to_dict(product) for (product) in products]
         for product in products:
-            product["fields"]['images'] = ProductImage.objects.filter(product_id=product['pk']).values()
+            product['images'] = ProductImage.objects.filter(product_id=product['id']).values()
         return products
+    @classmethod
+    def search(cls,text_search):
+        query =  "SELECT * FROM product_productmodel WHERE MATCH(`product_name`) AGAINST ('{}' IN NATURAL LANGUAGE MODE)".format(text_search)
+        products = ProductModel.objects.raw(query)
+        if products[::]:
+            products = [model_to_dict(product) for (product) in products]
+            for product in products:
+                product['images'] = ProductImage.objects.filter(product_id=product['id']).values()
+            return products
+        else:
+            return []
+
+

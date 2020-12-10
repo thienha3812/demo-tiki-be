@@ -5,7 +5,7 @@ from django.contrib import admin
 from account.views import login_account
 from image.views import render_image
 from order.views import place_order
-from product.views import get_all_product , insert_product, product_api_view
+from product.views import get_all_product, insert_product, product_api_view, search_product
 from review.views import create_review
 
 urlpatterns = [
@@ -14,6 +14,7 @@ urlpatterns = [
     url('api/product/get-all', get_all_product),
     url('api/product/insert-product', insert_product),
     url('api/product/(?P<product_id>\d+)',product_api_view),
+    url('api/product/search',search_product),
     # Image api
     url('api/static/images/(?P<img_name>\w+.\w+)', render_image),
     # Account api
