@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import json
 from audioop import add
 from os import stat
+from uu import decode
 
 import jwt
 from django.shortcuts import render
@@ -43,7 +44,9 @@ def place_order(request):
         item_in_order =  body['item_in_order']
         address = body['address']
         account_id = decode_token['account_id']
+        print 'start'
         order = Order.create(item_in_order=item_in_order,address=address,account_id=account_id)
+        print 'end'
         if order is not None:
             data = {
                 'message': 'Đặt hàng thành công',

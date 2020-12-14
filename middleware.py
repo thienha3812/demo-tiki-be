@@ -28,7 +28,6 @@ def authorize_token(func):
         if not token_is_valid:
             return response_with_error(errors['1001'])
         response = func(request)
-
         return response
     return wrapper
 
